@@ -70,7 +70,6 @@ public class SauceDemoTest {
                 return;
             }
 
-                        
             wait.until(ExpectedConditions.presenceOfElementLocated(By.id("inventory_container")));
             Assertions.assertTrue(driver.getTitle().contains("Swag Labs"));
 
@@ -86,7 +85,7 @@ public class SauceDemoTest {
 
             WebElement cartBadge = wait.until(ExpectedConditions.presenceOfElementLocated(By.className("shopping_cart_badge")));
             String itemsInCartStr = cartBadge.getText();
-
+            
             if (!username.equals("problem_user") && !username.equals("error_user")) {
                  Assertions.assertEquals(String.valueOf(itemsToAdd), itemsInCartStr, "Cart badge mismatch");
             }
@@ -94,24 +93,20 @@ public class SauceDemoTest {
             takeScreenshot(username + "_success");
 
         } catch (TimeoutException e) {
-                            
             takeScreenshot(username + "_timeout_failure");
         } catch (Exception e) {
             takeScreenshot(username + "_exception");
         }
     }
-                    
 
     private void takeScreenshot(String name) {
-
+        try {
             File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
             File destFile = new File("screenshots/" + name + ".png");
-                .copy(srcFile.toPath(), destFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOE
-                ntStackTrace();
-                        
+            Files.copy(srcFile.toPath(), destFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+}
 
-            
-
-                    
