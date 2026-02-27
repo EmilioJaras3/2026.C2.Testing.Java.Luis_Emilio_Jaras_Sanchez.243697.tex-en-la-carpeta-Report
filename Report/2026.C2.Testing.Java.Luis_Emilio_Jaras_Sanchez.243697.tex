@@ -3,61 +3,80 @@
 \usepackage{graphicx}
 \usepackage{geometry}
 \usepackage{hyperref}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault} % Fuente Arial-like
+\usepackage{fancyhdr}
 
 \geometry{a4paper, margin=1in}
 
-\title{\textbf{Reporte de Pruebas Automatizadas: SauceDemo}}
-\author{
-  Nombre: Luis Emilio Jaras Sanchez \\
-  Matrícula: 243697 \\
-  Curso: 2026.C2.Testing.Java
-}
-\date{\today}
-
 \begin{document}
 
-\maketitle
+% Portada
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    
+    {\Huge\bfseries Reporte de Pruebas Automatizadas\par}
+    \vspace{1cm}
+    {\Huge\bfseries SauceDemo\par}
+    
+    \vspace{2cm}
+    
+    {\Large\bfseries Pruebas Funcionales E2E con\par}
+    {\Large\bfseries Selenium (Java) y Cypress\par}
+    
+    \vfill
+    
+    {\Large\bfseries Alumno: Luis Emilio Jaras Sanchez\par}
+    \vspace{0.5cm}
+    {\large Matrícula: 243697\par}
+    \vspace{0.5cm}
+    {\large Curso: 2026.C2.Testing.Java\par}
+    
+    \vspace{1cm}
+    {\large \today\par}
+\end{titlepage}
 
-\section*{1. Portada}
+% Índice
+\tableofcontents
+\newpage
+
+\section{Introducción}
+
 \begin{itemize}
     \item \textbf{Proyecto:} Pruebas E2E en SauceDemo (\url{https://www.saucedemo.com})
     \item \textbf{Herramientas Utilizadas:} Selenium (Java) y Cypress
     \item \textbf{Objetivo:} Iniciar sesión con los 6 usuarios de prueba proporcionados, agregar 4 artículos al carrito, validar el estado del carrito, generar logs en consola, y tomar capturas de pantalla de los resultados. Además, implementar el manejo de excepciones para los usuarios con errores intencionales de la plataforma.
 \end{itemize}
 
-\section*{2. Desarrollo}
+\section{Desarrollo}
 
 Se dividió el proyecto en dos enfoques principales y se organizó en carpetas separadas:
 
-\subsection*{2.1 Enfoque 1: Selenium con Java (\texttt{/Selenium-Java})}
+\subsection{Enfoque 1: Selenium con Java (\texttt{/Selenium-Java})}
 Se creó un proyecto en Maven utilizando JUnit 5 y WebDriverManager para facilitar la configuración del Chrome Driver.
-
-\textbf{Configuración (\texttt{pom.xml}):}
-Se agregaron dependencias para \texttt{selenium-java}, \texttt{webdrivermanager} y \texttt{junit-jupiter}. 
 
 \textbf{Implementación (\texttt{SauceDemoTest.java}):}
 Mediante un \texttt{@ParameterizedTest}, se itera sobre la lista de 6 usuarios.
 \begin{itemize}
     \item \textbf{Acciones:} Login, espera explícita (\texttt{WebDriverWait}), agregar hasta 4 elementos y verificación del \texttt{shopping\_cart\_badge}.
-    \item \textbf{Manejo de Errores:} Usuarios como \texttt{locked\_out\_user} fueron validados mediante comprobación del mensaje emergente de error. Para usuarios como \texttt{problem\_user} o \texttt{error\_user} (que interceptan los clics) se capturaron excepciones para no quebrar la ejecución de las demás pruebas.
+    \item \textbf{Manejo de Errores:} Usuarios como \texttt{locked\_out\_user} fueron validados mediante comprobación del mensaje emergente de error. 
     \item \textbf{Capturas:} Al finalizar el escenario exitoso o la captura de una excepción, se toman capturas automatizadas y se guardan en la carpeta \texttt{/screenshots}.
 \end{itemize}
 
 \textbf{Comandos para ejecutar:}
 \begin{enumerate}
     \item Navegar a la carpeta: \texttt{cd Selenium-Java}
-    \item Ejecutar tests con Maven: \texttt{mvn test} \textit{(Nota: Necesita Maven agregado al PATH)}
+    \item Ejecutar tests con Maven: \texttt{mvn test}
 \end{enumerate}
 
-\subsection*{2.2 Enfoque 2: Cypress (\texttt{/Cypress-Testing})}
+\subsection{Enfoque 2: Cypress (\texttt{/Cypress-Testing})}
 Se inicializó un proyecto de NPM y se instaló Cypress localmente.
 
-\textbf{Configuración (\texttt{cypress.config.js}):}
-Se configuró el soporte para imprimir logs directamente en la terminal de Node mediante la función \texttt{on('task', \{ log(message)... \})}. Además, se añadió una regla a nivel de prueba (\texttt{Cypress.on('uncaught:exception')}) para evitar que fallos del código interno de SauceDemo para el usuario \texttt{error\_user} hicieran fallar a la suite.
-
 \textbf{Implementación (\texttt{saucedemo.cy.js}):}
+Para evitar que fallos del código interno de SauceDemo para el usuario \texttt{error\_user} hicieran fallar a la suite se agregó el interceptor \texttt{Cypress.on('uncaught:exception')}.
 \begin{itemize}
-    \item \textbf{Acciones:} \texttt{cy.visit}, login, iteración de los contenedores para buscar los botones de ``Add to cart''.
+    \item \textbf{Acciones:} \texttt{cy.visit}, login, iteración de los contenedores para buscar los botones de "Add to cart".
     \item \textbf{Manejo de Tiempos:} Cypress espera implícitamente a los elementos de UI, reduciendo fallos por latencia de carga.
 \end{itemize}
 
@@ -67,16 +86,33 @@ Se configuró el soporte para imprimir logs directamente en la terminal de Node 
     \item Ejecutar Cypress: \texttt{npx cypress run}
 \end{enumerate}
 
-\section*{3. Conclusiones}
+\section{Resultados y Capturas}
+Los resultados de ejecución han guardado las capturas de pantalla para cada usuario. Como evidencia principal, se adjunta:
+
+\begin{figure}[h]
+    \centering
+    % Ajusta esta ruta a donde alojes tus imágenes en Overleaf o localmente
+    \includegraphics[width=0.8\textwidth]{../Selenium-Java/screenshots/standard_user_success.png}
+    \caption{Evidencia: standard\_user exitoso (Selenium Java)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    % Ajusta esta ruta a donde alojes tus imágenes en Overleaf o localmente
+    \includegraphics[width=0.8\textwidth]{../Selenium-Java/screenshots/locked_out_user_locked_out.png}
+    \caption{Evidencia: locked\_out\_user error esperado (Selenium Java)}
+\end{figure}
+
+\section{Conclusiones}
 La automatización de un mismo flujo E2E en dos herramientas diferentes permite contrastar enormemente sus enfoques:
 \begin{enumerate}
-    \item \textbf{Selenium Java (Imperativo):} Requiere configuración explícita del Driver, tiempos de espera y dependencias (Mvn, JUnit). Es altamente estricto, lo cual lo hace potente pero a la vez requiere mayor mantenimiento y código repetitivo.
-    \item \textbf{Cypress (Declarativo y Asíncrono):} Su configuración con JSON/JS es sumamente sencilla. Emula al usuario de una manera natural en la web moderna e inyecta esperas por defecto que reducen la ``flakiness'' de las pruebas. Resolver problemas técnicos de la propia página (como excepciones internas) requirió solo interceptar el error a nivel del test runner sin ensuciar la lógica de negocio.
+    \item \textbf{Selenium Java (Imperativo):} Requiere configuración explícita del Driver, tiempos de espera y dependencias. Es altamente estricto, lo cual lo hace potente pero a la vez requiere mayor mantenimiento.
+    \item \textbf{Cypress (Declarativo y Asíncrono):} Su configuración con JSON/JS es sumamente sencilla. Emula al usuario de una manera natural en la web moderna e inyecta esperas por defecto que reducen la "flakiness" de las pruebas. Resolver problemas técnicos de la propia página requirió solo interceptar el error a nivel del test runner sin ensuciar la lógica de negocio.
 \end{enumerate}
 Manejar estos escenarios fallidos es esencial para la estabilidad de cualquier ciclo de pruebas reales.
 
 \vspace{1cm}
 \textbf{Liga del Repositorio (Git):} \\
-[Incluir liga de GitHub aquí]
+\url{https://github.com/EmilioJaras3/2026.C2.Testing.Java.Luis_Emilio_Jaras_Sanchez.243697.tex-en-la-carpeta-Report}
 
 \end{document}
